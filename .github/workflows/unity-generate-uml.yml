@@ -15,8 +15,6 @@ jobs:
       UMP_GENERATION_PARAMETERS: -public -createAssociation -allInOne
     steps:
       - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GH_TOKEN }}
           
       - name: Remove old diagrams 
         run: rm -r ${{ env.UML_OUTPUT_PATH }} || true
