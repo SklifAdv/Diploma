@@ -1,0 +1,11 @@
+@startuml
+class PlacedEdgeObjectData {
+    + gameObjectIndex : int
+    + structureID : int
+    + PlacedEdgeObjectData(gameObjectIndex:int, structureID:int, positionsOccupied:IEnumerable<Edge>, origin:Vector3Int)
+}
+class "IEnumerable`1"<T> {
+}
+PlacedEdgeObjectData --> "PositionsOccupied<Edge>" "IEnumerable`1"
+PlacedEdgeObjectData --> "origin" Vector3Int
+@enduml

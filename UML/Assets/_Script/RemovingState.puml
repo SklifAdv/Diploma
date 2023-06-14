@@ -1,0 +1,6 @@
+@startuml
+class RemovingState {
+    + RemovingState(gridManager:GridManager, gridData:GridData, itemData:ItemData)
+}
+BuildingState <|-- RemovingState
+@enduml

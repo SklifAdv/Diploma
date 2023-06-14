@@ -1,0 +1,16 @@
+@startuml
+class ButtonFeedback {
+    selected : bool = false
+    +  <<event>> OnClicked : Action 
+    + ResetButton() : void
+    + OnPointerEnter(eventData:PointerEventData) : void
+    + OnPointerExit(eventData:PointerEventData) : void
+    + OnPointerDown(eventData:PointerEventData) : void
+    + ApplyClickedFeedback() : void
+}
+MonoBehaviour <|-- ButtonFeedback
+IPointerEnterHandler <|-- ButtonFeedback
+IPointerExitHandler <|-- ButtonFeedback
+IPointerDownHandler <|-- ButtonFeedback
+ButtonFeedback --> "defaultColor" Color
+@enduml

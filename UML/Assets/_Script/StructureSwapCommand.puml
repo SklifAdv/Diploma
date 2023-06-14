@@ -1,0 +1,17 @@
+@startuml
+class StructureSwapCommand {
+    + StructureSwapCommand(placementManager:PlacementManager, placementData:PlacementGridData, previousPlacementData:PlacementGridData, gridManager:GridManager, itemData:ItemData, selectionResult:SelectionResult, previousItemData:ItemData)
+    + CanExecute() : bool
+    + Execute() : void
+    + Undo() : void
+}
+ICommand <|-- StructureSwapCommand
+StructureSwapCommand --> "placementManager" PlacementManager
+StructureSwapCommand --> "placementData" PlacementGridData
+StructureSwapCommand --> "previousPlacementData" PlacementGridData
+StructureSwapCommand --> "itemData" ItemData
+StructureSwapCommand --> "previousItemData" ItemData
+StructureSwapCommand --> "gridManager" GridManager
+StructureSwapCommand --> "selectionResult" SelectionResult
+StructureSwapCommand --> "previousStructuresResult" SelectionResult
+@enduml

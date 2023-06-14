@@ -1,0 +1,7 @@
+@startuml
+class SaveLoadSystem {
+    SaveData() : void
+    Update() : void
+}
+MonoBehaviour <|-- SaveLoadSystem
+@enduml

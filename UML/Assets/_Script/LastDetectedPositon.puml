@@ -1,0 +1,8 @@
+@startuml
+class LastDetectedPositon {
+    + lastPosition : Vector3Int?
+    + GetPosition() : Vector3Int
+    + TryUpdatingPositon(tempPos:Vector3Int) : bool
+    + Reset() : void
+}
+@enduml

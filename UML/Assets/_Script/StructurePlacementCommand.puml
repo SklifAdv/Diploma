@@ -1,0 +1,13 @@
+@startuml
+class StructurePlacementCommand {
+    + StructurePlacementCommand(placementManager:PlacementManager, placementData:PlacementGridData, itemData:ItemData, selectionResult:SelectionResult)
+    + CanExecute() : bool
+    + Execute() : void
+    + Undo() : void
+}
+ICommand <|-- StructurePlacementCommand
+StructurePlacementCommand --> "placementManager" PlacementManager
+StructurePlacementCommand --> "placementData" PlacementGridData
+StructurePlacementCommand --> "itemData" ItemData
+StructurePlacementCommand --> "selectionResult" SelectionResult
+@enduml

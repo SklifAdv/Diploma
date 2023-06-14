@@ -1,0 +1,22 @@
+@startuml
+class GridManager {
+    + GetCellPosition(worldPosition:Vector3, placementType:PlacementType) : Vector3Int
+    + GetWorldPosition(cellPosition:Vector3Int) : Vector3
+    + GetCenterPositionForCell(cellPosition:Vector3Int) : Vector3
+    + ToggleGrid(value:bool) : void
+}
+enum PlacementType {
+    None,
+    Floor,
+    Wall,
+    InWalls,
+    NearWallObject,
+    FreePlacedObject,
+}
+class PlacementTypeExtensions <<static>> {
+    + {static} IsEdgePlacement(placementType:PlacementType) : bool
+    + {static} IsObjectPlacement(placementType:PlacementType) : bool
+}
+MonoBehaviour <|-- GridManager
+GridManager --> "GridSize" Vector2Int
+@enduml

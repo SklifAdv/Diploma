@@ -1,0 +1,14 @@
+@startuml
+class PlacementSelector {
+    +  <<event>> OnSelectionChanged,OnSelectionFinished : Action<SelectionResult> 
+    + PlacementSelector(placementStrategy:SelectionStrategy, selectionData:SelectionData)
+    + HandleSelectionStarted(mousePosition:Vector3) : void
+    + HandleSelectionFinished() : void
+    + HandleMouseMovement(mousePosition:Vector3) : void
+    + HandleRotation(rotationAmount:Quaternion) : void
+    + ResetSelection() : void
+}
+PlacementSelector --> "selectionData" SelectionData
+PlacementSelector --> "selectionStrategy" SelectionStrategy
+PlacementSelector --> "CurrentSelectionStrategy" SelectionStrategy
+@enduml

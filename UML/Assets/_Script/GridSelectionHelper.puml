@@ -1,0 +1,10 @@
+@startuml
+class GridSelectionHelper <<static>> {
+    + {static} MoveMinToMaxInclusive(minVal:int, maxVal:int, step:int) : IEnumerable<int>
+    + {static} MoveMaxToMinInclusive(minVal:int, maxVal:int, step:int) : IEnumerable<int>
+    + {static} AStar(startPos:Vector3Int, endPos:Vector3Int, placementData:PlacementGridData) : List<Vector3Int>
+}
+class "List`1"<T> {
+}
+GridSelectionHelper o-> "Directions<Vector3Int>" "List`1"
+@enduml

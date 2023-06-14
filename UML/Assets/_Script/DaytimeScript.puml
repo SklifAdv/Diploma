@@ -1,0 +1,7 @@
+@startuml
+class DaytimeScript {
+    Start() : void
+    + ChangeDaytime() : void
+}
+MonoBehaviour <|-- DaytimeScript
+@enduml

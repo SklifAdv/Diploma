@@ -1,0 +1,10 @@
+@startuml
+class FreeObjectPlacementStrategy {
+    + FreeObjectPlacementStrategy(placementData:PlacementGridData, wallPlacementData:PlacementGridData, inWallPlacementData:PlacementGridData, gridManager:GridManager)
+    + <<override>> StartSelection(mousePosition:Vector3, selectionData:SelectionData) : void
+    + <<override>> ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + <<override>> HandleRotation(rotation:Quaternion, selectionData:SelectionData) : Quaternion
+    + <<override>> FinishSelection(selectionData:SelectionData) : void
+}
+SelectionStrategy <|-- FreeObjectPlacementStrategy
+@enduml

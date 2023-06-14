@@ -1,0 +1,9 @@
+@startuml
+class WallPlacementStrategy {
+    + WallPlacementStrategy(wallPlacementData:PlacementGridData, inWallPlacementData:PlacementGridData, objectPlacementData:PlacementGridData, gridManager:GridManager)
+    + <<override>> StartSelection(mousePosition:Vector3, selectionData:SelectionData) : void
+    + <<override>> ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + <<override>> FinishSelection(selectionData:SelectionData) : void
+}
+SelectionStrategy <|-- WallPlacementStrategy
+@enduml

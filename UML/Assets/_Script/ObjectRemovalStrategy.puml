@@ -1,0 +1,6 @@
+@startuml
+class ObjectRemovalStrategy {
+    + ObjectRemovalStrategy(placementData:PlacementGridData, wallPlacementData:PlacementGridData, inWallPlacementData:PlacementGridData, gridManager:GridManager)
+}
+FreeObjectPlacementStrategy <|-- ObjectRemovalStrategy
+@enduml

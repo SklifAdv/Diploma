@@ -1,0 +1,14 @@
+@startuml
+class SelectionResult <<struct>> {
+    + placementValidity : bool
+    + isEdgeStructure : bool
+}
+class "List`1"<T> {
+}
+SelectionResult --> "selectedPositions<Vector3>" "List`1"
+SelectionResult --> "selectedGridPositions<Vector3Int>" "List`1"
+SelectionResult --> "selectedPreviewPositions<Vector3>" "List`1"
+SelectionResult --> "selectedPositionsObjectRotation<Quaternion>" "List`1"
+SelectionResult --> "selectedPositionGridCheckRotation<Quaternion>" "List`1"
+SelectionResult --> "size" Vector2Int
+@enduml

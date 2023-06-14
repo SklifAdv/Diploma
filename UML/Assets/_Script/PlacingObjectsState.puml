@@ -1,0 +1,6 @@
+@startuml
+class PlacingObjectsState {
+    + PlacingObjectsState(gridManager:GridManager, gridData:GridData, itemData:ItemData)
+}
+BuildingState <|-- PlacingObjectsState
+@enduml

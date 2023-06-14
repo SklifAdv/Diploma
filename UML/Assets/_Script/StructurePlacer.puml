@@ -1,0 +1,11 @@
+@startuml
+class StructurePlacer {
+    + GetObjectsRotation(index:int) : Quaternion
+    + PlaceStructure(objectToPlace:GameObject, position:Vector3, rotation:Quaternion, yHeight:float) : int
+    + RemoveObjectAt(index:int) : void
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- StructurePlacer
+StructurePlacer o-> "placedObjects<GameObject>" "List`1"
+@enduml

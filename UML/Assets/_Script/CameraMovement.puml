@@ -1,0 +1,9 @@
+@startuml
+class CameraMovement {
+    Update() : void
+}
+MonoBehaviour <|-- CameraMovement
+CameraMovement --> "cameraReference" CinemachineVirtualCamera
+CameraMovement --> "cameraTransposer" CinemachineTransposer
+CameraMovement --> "input" Vector2
+@enduml

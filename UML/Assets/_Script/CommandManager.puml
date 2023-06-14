@@ -1,0 +1,8 @@
+@startuml
+class CommandManager {
+    + Invoke(commandToExecute:ICommand) : void
+    + Undo() : bool
+    + ClearCommandsList() : void
+    + GetCommandsCount() : int
+}
+@enduml

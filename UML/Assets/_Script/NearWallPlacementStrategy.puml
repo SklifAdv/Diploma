@@ -1,0 +1,8 @@
+@startuml
+class NearWallPlacementStrategy {
+    + NearWallPlacementStrategy(placementData:PlacementGridData, wallPlacementData:PlacementGridData, inWallPlacementData:PlacementGridData, gridManager:GridManager)
+    + <<override>> ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + <<override>> HandleRotation(rotation:Quaternion, selectionData:SelectionData) : Quaternion
+}
+FreeObjectPlacementStrategy <|-- NearWallPlacementStrategy
+@enduml

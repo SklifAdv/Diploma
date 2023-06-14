@@ -1,0 +1,10 @@
+@startuml
+class InputManager {
+    +  <<event>> OnMousePressed,OnMouseReleased,OnCancle,OnUndo : Action 
+    +  <<event>> OnRotate : Action<int> 
+    +  <<event>> OnToggleDelete : Action<bool> 
+    + GetSelectedMapPosition() : Vector3
+    + IsInteractingWithUI() : bool
+}
+MonoBehaviour <|-- InputManager
+@enduml

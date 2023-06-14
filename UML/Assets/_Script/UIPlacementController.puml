@@ -1,0 +1,19 @@
+@startuml
+class UIPlacementController {
+    + SelectObjectWithIndex(index:int) : void
+    + RequestUndo() : void
+    + MoveRequest() : void
+    + ResetMovementButton() : void
+    + CancelPlacementRequested() : void
+    + EnterMovementState() : void
+}
+class "UnityEvent`1"<T> {
+}
+MonoBehaviour <|-- UIPlacementController
+UIPlacementController --> "OnObjectSelected<int>" "UnityEvent`1"
+UIPlacementController --> "OnUndoRequested" UnityEvent
+UIPlacementController --> "OnMoveRequest" UnityEvent
+UIPlacementController --> "OnResetMovementButton" UnityEvent
+UIPlacementController --> "OnCancelPlacement" UnityEvent
+UIPlacementController --> "OnMovementStateEntered" UnityEvent
+@enduml

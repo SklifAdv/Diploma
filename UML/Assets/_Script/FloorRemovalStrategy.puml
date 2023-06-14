@@ -1,0 +1,6 @@
+@startuml
+class FloorRemovalStrategy {
+    + FloorRemovalStrategy(placementData:PlacementGridData, gridManager:GridManager)
+}
+BoxSelection <|-- FloorRemovalStrategy
+@enduml

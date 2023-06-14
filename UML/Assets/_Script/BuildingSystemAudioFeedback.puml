@@ -1,0 +1,10 @@
+@startuml
+class BuildingSystemAudioFeedback {
+    + PlayUndoSound() : void
+    + PlayPlaceFurniture() : void
+    + PlayPlaceConstruction() : void
+    + PlayRemove() : void
+    + PlayRotate() : void
+}
+MonoBehaviour <|-- BuildingSystemAudioFeedback
+@enduml

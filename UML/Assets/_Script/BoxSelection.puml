@@ -1,0 +1,9 @@
+@startuml
+class BoxSelection {
+    + BoxSelection(placementData:PlacementGridData, gridManager:GridManager)
+    + <<override>> ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + <<override>> StartSelection(mousePosition:Vector3, selectionData:SelectionData) : void
+    + <<override>> FinishSelection(selectionData:SelectionData) : void
+}
+SelectionStrategy <|-- BoxSelection
+@enduml

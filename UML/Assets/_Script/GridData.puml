@@ -1,0 +1,9 @@
+@startuml
+class GridData {
+    + GridData(gridSize:Vector2Int)
+}
+GridData --> "WallPlacementData" PlacementGridData
+GridData --> "FloorPlacementData" PlacementGridData
+GridData --> "ObjectPlacementData" PlacementGridData
+GridData --> "InWallPlacementData" PlacementGridData
+@enduml

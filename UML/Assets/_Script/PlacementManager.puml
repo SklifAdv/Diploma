@@ -1,0 +1,35 @@
+@startuml
+class PlacementManager {
+    + StartPlacingObject(id:int) : void
+    + TryRemovingObject(selectionResult:SelectionResult) : void
+    + TryUndoLastPlacement() : void
+    + CancelState() : void
+    + PlaceStructureAt(selectionResult:SelectionResult, placementData:PlacementGridData, itemData:ItemData) : void
+    + RemoveStructureAt(selectionResult:SelectionResult, placementData:PlacementGridData) : void
+    Update() : void
+    previousPosition : Vector3Int?
+    + HandleMoveObject() : void
+    SaveData() : void
+    LoadData() : void
+}
+class "HashSet`1"<T> {
+}
+class "UnityEvent`1"<T> {
+}
+MonoBehaviour <|-- PlacementManager
+PlacementManager o-> "cellsSelected<Vector3Int>" "HashSet`1"
+PlacementManager o-> "commandManager" CommandManager
+PlacementManager --> "gridData" GridData
+PlacementManager --> "itemData" ItemData
+PlacementManager --> "buildingState" BuildingState
+PlacementManager --> "OnExitPlacementMode" UnityEvent
+PlacementManager --> "OnPlaceConstructionObject" UnityEvent
+PlacementManager --> "OnPlaceFurnitureObject" UnityEvent
+PlacementManager --> "OnRemoveObject" UnityEvent
+PlacementManager --> "OnUndo" UnityEvent
+PlacementManager --> "OnRotate" UnityEvent
+PlacementManager --> "OnExitMovement" UnityEvent
+PlacementManager --> "OnMovementStateEntered" UnityEvent
+PlacementManager --> "OnToggleUndo<bool>" "UnityEvent`1"
+PlacementManager --> "previousRotation" Quaternion
+@enduml

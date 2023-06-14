@@ -1,0 +1,16 @@
+@startuml
+abstract class BuildingState {
+    + BuildingState(gridManager:GridManager, gridData:GridData, itemData:ItemData)
+    + <<virtual>> HandleSelectionFinished() : void
+    + <<virtual>> HandleSelectionStarted(selectedMapPosition:Vector3) : void
+    + <<virtual>> HandleRotation(modifier:int) : void
+    + <<virtual>> HandleSelectionChanged(selectedMapPosition:Vector3) : void
+    + RefreshSelection() : void
+}
+class "Action`1"<T> {
+}
+BuildingState --> "CurrentPlacementData" PlacementGridData
+BuildingState --> "SelectionData" SelectionData
+BuildingState --> "OnFinished<SelectionResult>" "Action`1"
+BuildingState --> "OnSelectionChanged<SelectionResult>" "Action`1"
+@enduml

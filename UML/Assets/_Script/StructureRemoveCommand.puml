@@ -1,0 +1,15 @@
+@startuml
+class StructureRemoveCommand {
+    + StructureRemoveCommand(gridManager:GridManager, placementManager:PlacementManager, placementData:PlacementGridData, itemData:ItemData, selectionResult:SelectionResult)
+    + CanExecute() : bool
+    + Execute() : void
+    + Undo() : void
+}
+ICommand <|-- StructureRemoveCommand
+StructureRemoveCommand --> "placementManager" PlacementManager
+StructureRemoveCommand --> "placementData" PlacementGridData
+StructureRemoveCommand --> "itemData" ItemData
+StructureRemoveCommand --> "gridManager" GridManager
+StructureRemoveCommand --> "selectionResult" SelectionResult
+StructureRemoveCommand --> "selectionResultToRestore" SelectionResult
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class PlacementValidator <<static>> {
+    + {static} CheckIfPositionsAreOccupied(selectedPositions:List<Vector3Int>, placementData:PlacementGridData, objectSize:Vector2Int, selectedPositionsRotation:List<Quaternion>, edgePlacement:bool) : bool
+    + {static} CheckIfPositionsAreFree(selectedPositions:List<Vector3Int>, placementData:PlacementGridData, objectSize:Vector2Int, selectedPositionsRotation:List<Quaternion>, edgePlacement:bool) : bool
+    + {static} CheckIfPositionsAreValid(selectedPositions:List<Vector3Int>, placementData:PlacementGridData, objectSize:Vector2Int, selectedPositionsRotation:List<Quaternion>, edgePlacement:bool) : bool
+}
+@enduml

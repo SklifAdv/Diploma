@@ -1,0 +1,11 @@
+@startuml
+class PlacedCellObjectData {
+    + gameObjectIndex : int
+    + structureID : int
+    + PlacedCellObjectData(gameObjectIndex:int, structureID:int, positionsOccupied:IEnumerable<Vector3Int>, origin:Vector3Int)
+}
+class "IEnumerable`1"<T> {
+}
+PlacedCellObjectData --> "PositionsOccupied<Vector3Int>" "IEnumerable`1"
+PlacedCellObjectData --> "origin" Vector3Int
+@enduml

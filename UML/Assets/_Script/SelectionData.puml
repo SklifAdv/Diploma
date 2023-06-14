@@ -1,0 +1,20 @@
+@startuml
+class SelectionData {
+    + PlacementValidity : bool <<set>> <<get>>
+    + SelectionData(placedItemData:ItemData)
+    + Clear() : void
+    + AddToGridPositions(pos:Vector3Int) : void
+    + AddToWorldPositions(pos:Vector3) : void
+    + AddToPreviewPositions(pos:Vector3) : void
+    + GetSelectedGridPositions() : List<Vector3Int>
+    + GetSelectedWorldPositions() : List<Vector3>
+    + GetPreviewGridPositions() : List<Vector3>
+    + GetSelectedPositionsObjectRotation() : List<Quaternion>
+    + GetSelectedPositionsGridRotation() : List<Quaternion>
+    + GetData() : SelectionResult
+    + SetObjectRotation(objectsRotation:List<Quaternion>) : void
+    + SetGridCheckRotation(gridCheckRotation:List<Quaternion>) : void
+}
+SelectionData --> "PlacedItemData" ItemData
+SelectionData o-> "Rotation" Quaternion
+@enduml

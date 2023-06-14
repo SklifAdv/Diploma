@@ -1,0 +1,17 @@
+@startuml
+class ItemDataBaseSO {
+    + GetItemWithID(id:int) : ItemData
+}
+class ItemData {
+    + name : string
+    + ID : int
+}
+class "List`1"<T> {
+}
+ScriptableObject <|-- ItemDataBaseSO
+ItemDataBaseSO --> "structures<ItemData>" "List`1"
+ItemData --> "size" Vector2Int
+ItemData --> "objectPlacementType" PlacementType
+ItemData --> "prefab" GameObject
+ItemData --> "previewObject" GameObject
+@enduml

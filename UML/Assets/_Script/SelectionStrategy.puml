@@ -1,0 +1,10 @@
+@startuml
+abstract class SelectionStrategy {
+    + SelectionStrategy(placementData:PlacementGridData, gridManager:GridManager)
+    + {abstract} ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + RefreshSelection(selectionData:SelectionData) : void
+    + {abstract} FinishSelection(selectionData:SelectionData) : void
+    + {abstract} StartSelection(mousePosition:Vector3, selectionData:SelectionData) : void
+    + <<virtual>> HandleRotation(rotation:Quaternion, selectionData:SelectionData) : Quaternion
+}
+@enduml

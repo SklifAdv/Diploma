@@ -1,0 +1,10 @@
+@startuml
+class PlacementPreview {
+    + MovePreview(positions:List<Vector3>, rotation:List<Quaternion>) : void
+    + StopShowingPreview() : void
+    + StartShowingPreview(placedObject:GameObject, keepMaterial:bool) : void
+    + ShowPlacementFeedback(val:bool) : void
+}
+MonoBehaviour <|-- PlacementPreview
+PlacementPreview --> "defautlColor" Color
+@enduml

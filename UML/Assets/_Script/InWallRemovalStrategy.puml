@@ -1,0 +1,6 @@
+@startuml
+class InWallRemovalStrategy {
+    + InWallRemovalStrategy(inWallObjectsPlacementData:PlacementGridData, placementData:PlacementGridData, gridManager:GridManager)
+}
+InWallPlacementStrategy <|-- InWallRemovalStrategy
+@enduml

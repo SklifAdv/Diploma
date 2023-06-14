@@ -1,0 +1,7 @@
+@startuml
+class ButtonHighlightController {
+    + ResetAll() : void
+}
+MonoBehaviour <|-- ButtonHighlightController
+ButtonHighlightController --> "buttonClickSound" AudioSource
+@enduml

@@ -1,0 +1,396 @@
+@startuml
+class RemovingState {
+    + RemovingState(gridManager:GridManager, gridData:GridData, itemData:ItemData)
+}
+BuildingState <|-- RemovingState
+interface ICommand {
+    Execute() : void
+    CanExecute() : bool
+    Undo() : void
+}
+abstract class BuildingState {
+    + BuildingState(gridManager:GridManager, gridData:GridData, itemData:ItemData)
+    + <<virtual>> HandleSelectionFinished() : void
+    + <<virtual>> HandleSelectionStarted(selectedMapPosition:Vector3) : void
+    + <<virtual>> HandleRotation(modifier:int) : void
+    + <<virtual>> HandleSelectionChanged(selectedMapPosition:Vector3) : void
+    + RefreshSelection() : void
+}
+class "Action`1"<T> {
+}
+BuildingState --> "CurrentPlacementData" PlacementGridData
+BuildingState --> "SelectionData" SelectionData
+BuildingState --> "OnFinished<SelectionResult>" "Action`1"
+BuildingState --> "OnSelectionChanged<SelectionResult>" "Action`1"
+class GridSelectionHelper <<static>> {
+    + {static} MoveMinToMaxInclusive(minVal:int, maxVal:int, step:int) : IEnumerable<int>
+    + {static} MoveMaxToMinInclusive(minVal:int, maxVal:int, step:int) : IEnumerable<int>
+    + {static} AStar(startPos:Vector3Int, endPos:Vector3Int, placementData:PlacementGridData) : List<Vector3Int>
+}
+class "List`1"<T> {
+}
+GridSelectionHelper o-> "Directions<Vector3Int>" "List`1"
+abstract class SelectionStrategy {
+    + SelectionStrategy(placementData:PlacementGridData, gridManager:GridManager)
+    + {abstract} ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + RefreshSelection(selectionData:SelectionData) : void
+    + {abstract} FinishSelection(selectionData:SelectionData) : void
+    + {abstract} StartSelection(mousePosition:Vector3, selectionData:SelectionData) : void
+    + <<virtual>> HandleRotation(rotation:Quaternion, selectionData:SelectionData) : Quaternion
+}
+class StructureRemoveCommand {
+    + StructureRemoveCommand(gridManager:GridManager, placementManager:PlacementManager, placementData:PlacementGridData, itemData:ItemData, selectionResult:SelectionResult)
+    + CanExecute() : bool
+    + Execute() : void
+    + Undo() : void
+}
+ICommand <|-- StructureRemoveCommand
+StructureRemoveCommand --> "placementManager" PlacementManager
+StructureRemoveCommand --> "placementData" PlacementGridData
+StructureRemoveCommand --> "itemData" ItemData
+StructureRemoveCommand --> "gridManager" GridManager
+StructureRemoveCommand --> "selectionResult" SelectionResult
+StructureRemoveCommand --> "selectionResultToRestore" SelectionResult
+class InWallRemovalStrategy {
+    + InWallRemovalStrategy(inWallObjectsPlacementData:PlacementGridData, placementData:PlacementGridData, gridManager:GridManager)
+}
+InWallPlacementStrategy <|-- InWallRemovalStrategy
+class StructureSwapCommand {
+    + StructureSwapCommand(placementManager:PlacementManager, placementData:PlacementGridData, previousPlacementData:PlacementGridData, gridManager:GridManager, itemData:ItemData, selectionResult:SelectionResult, previousItemData:ItemData)
+    + CanExecute() : bool
+    + Execute() : void
+    + Undo() : void
+}
+ICommand <|-- StructureSwapCommand
+StructureSwapCommand --> "placementManager" PlacementManager
+StructureSwapCommand --> "placementData" PlacementGridData
+StructureSwapCommand --> "previousPlacementData" PlacementGridData
+StructureSwapCommand --> "itemData" ItemData
+StructureSwapCommand --> "previousItemData" ItemData
+StructureSwapCommand --> "gridManager" GridManager
+StructureSwapCommand --> "selectionResult" SelectionResult
+StructureSwapCommand --> "previousStructuresResult" SelectionResult
+class WallRemovalStrategy {
+    + WallRemovalStrategy(wallPlacementData:PlacementGridData, inWallPlacementData:PlacementGridData, objectPlacementData:PlacementGridData, gridManager:GridManager)
+}
+WallPlacementStrategy <|-- WallRemovalStrategy
+class ButtonFeedback {
+    selected : bool = false
+    +  <<event>> OnClicked : Action 
+    + ResetButton() : void
+    + OnPointerEnter(eventData:PointerEventData) : void
+    + OnPointerExit(eventData:PointerEventData) : void
+    + OnPointerDown(eventData:PointerEventData) : void
+    + ApplyClickedFeedback() : void
+}
+MonoBehaviour <|-- ButtonFeedback
+IPointerEnterHandler <|-- ButtonFeedback
+IPointerExitHandler <|-- ButtonFeedback
+IPointerDownHandler <|-- ButtonFeedback
+ButtonFeedback --> "defaultColor" Color
+class NearWallPlacementStrategy {
+    + NearWallPlacementStrategy(placementData:PlacementGridData, wallPlacementData:PlacementGridData, inWallPlacementData:PlacementGridData, gridManager:GridManager)
+    + <<override>> ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + <<override>> HandleRotation(rotation:Quaternion, selectionData:SelectionData) : Quaternion
+}
+FreeObjectPlacementStrategy <|-- NearWallPlacementStrategy
+class GridData {
+    + GridData(gridSize:Vector2Int)
+}
+GridData --> "WallPlacementData" PlacementGridData
+GridData --> "FloorPlacementData" PlacementGridData
+GridData --> "ObjectPlacementData" PlacementGridData
+GridData --> "InWallPlacementData" PlacementGridData
+class LastDetectedPositon {
+    + lastPosition : Vector3Int?
+    + GetPosition() : Vector3Int
+    + TryUpdatingPositon(tempPos:Vector3Int) : bool
+    + Reset() : void
+}
+class BoxSelection {
+    + BoxSelection(placementData:PlacementGridData, gridManager:GridManager)
+    + <<override>> ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + <<override>> StartSelection(mousePosition:Vector3, selectionData:SelectionData) : void
+    + <<override>> FinishSelection(selectionData:SelectionData) : void
+}
+SelectionStrategy <|-- BoxSelection
+class InWallPlacementStrategy {
+    + InWallPlacementStrategy(wallPlacementData:PlacementGridData, placementData:PlacementGridData, gridManager:GridManager)
+    + <<override>> StartSelection(mousePosition:Vector3, selectionData:SelectionData) : void
+    + <<override>> ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + <<override>> FinishSelection(selectionData:SelectionData) : void
+}
+SelectionStrategy <|-- InWallPlacementStrategy
+class GridManager {
+    + GetCellPosition(worldPosition:Vector3, placementType:PlacementType) : Vector3Int
+    + GetWorldPosition(cellPosition:Vector3Int) : Vector3
+    + GetCenterPositionForCell(cellPosition:Vector3Int) : Vector3
+    + ToggleGrid(value:bool) : void
+}
+enum PlacementType {
+    None,
+    Floor,
+    Wall,
+    InWalls,
+    NearWallObject,
+    FreePlacedObject,
+}
+class PlacementTypeExtensions <<static>> {
+    + {static} IsEdgePlacement(placementType:PlacementType) : bool
+    + {static} IsObjectPlacement(placementType:PlacementType) : bool
+}
+MonoBehaviour <|-- GridManager
+GridManager --> "GridSize" Vector2Int
+class ItemDataBaseSO {
+    + GetItemWithID(id:int) : ItemData
+}
+class ItemData {
+    + name : string
+    + ID : int
+}
+class "List`1"<T> {
+}
+ScriptableObject <|-- ItemDataBaseSO
+ItemDataBaseSO --> "structures<ItemData>" "List`1"
+ItemData --> "size" Vector2Int
+ItemData --> "objectPlacementType" PlacementType
+ItemData --> "prefab" GameObject
+ItemData --> "previewObject" GameObject
+class SelectionResult <<struct>> {
+    + placementValidity : bool
+    + isEdgeStructure : bool
+}
+class "List`1"<T> {
+}
+SelectionResult --> "selectedPositions<Vector3>" "List`1"
+SelectionResult --> "selectedGridPositions<Vector3Int>" "List`1"
+SelectionResult --> "selectedPreviewPositions<Vector3>" "List`1"
+SelectionResult --> "selectedPositionsObjectRotation<Quaternion>" "List`1"
+SelectionResult --> "selectedPositionGridCheckRotation<Quaternion>" "List`1"
+SelectionResult --> "size" Vector2Int
+class BuildingSystemAudioFeedback {
+    + PlayUndoSound() : void
+    + PlayPlaceFurniture() : void
+    + PlayPlaceConstruction() : void
+    + PlayRemove() : void
+    + PlayRotate() : void
+}
+MonoBehaviour <|-- BuildingSystemAudioFeedback
+class FloorRemovalStrategy {
+    + FloorRemovalStrategy(placementData:PlacementGridData, gridManager:GridManager)
+}
+BoxSelection <|-- FloorRemovalStrategy
+class PlacingObjectsState {
+    + PlacingObjectsState(gridManager:GridManager, gridData:GridData, itemData:ItemData)
+}
+BuildingState <|-- PlacingObjectsState
+class CameraMovement {
+    Update() : void
+}
+MonoBehaviour <|-- CameraMovement
+CameraMovement --> "cameraReference" CinemachineVirtualCamera
+CameraMovement --> "cameraTransposer" CinemachineTransposer
+CameraMovement --> "input" Vector2
+class ObjectRemovalStrategy {
+    + ObjectRemovalStrategy(placementData:PlacementGridData, wallPlacementData:PlacementGridData, inWallPlacementData:PlacementGridData, gridManager:GridManager)
+}
+FreeObjectPlacementStrategy <|-- ObjectRemovalStrategy
+class PlacementManager {
+    + StartPlacingObject(id:int) : void
+    + TryRemovingObject(selectionResult:SelectionResult) : void
+    + TryUndoLastPlacement() : void
+    + CancelState() : void
+    + PlaceStructureAt(selectionResult:SelectionResult, placementData:PlacementGridData, itemData:ItemData) : void
+    + RemoveStructureAt(selectionResult:SelectionResult, placementData:PlacementGridData) : void
+    Update() : void
+    previousPosition : Vector3Int?
+    + HandleMoveObject() : void
+    SaveData() : void
+    LoadData() : void
+}
+class "HashSet`1"<T> {
+}
+class "UnityEvent`1"<T> {
+}
+MonoBehaviour <|-- PlacementManager
+PlacementManager o-> "cellsSelected<Vector3Int>" "HashSet`1"
+PlacementManager o-> "commandManager" CommandManager
+PlacementManager --> "gridData" GridData
+PlacementManager --> "itemData" ItemData
+PlacementManager --> "buildingState" BuildingState
+PlacementManager --> "OnExitPlacementMode" UnityEvent
+PlacementManager --> "OnPlaceConstructionObject" UnityEvent
+PlacementManager --> "OnPlaceFurnitureObject" UnityEvent
+PlacementManager --> "OnRemoveObject" UnityEvent
+PlacementManager --> "OnUndo" UnityEvent
+PlacementManager --> "OnRotate" UnityEvent
+PlacementManager --> "OnExitMovement" UnityEvent
+PlacementManager --> "OnMovementStateEntered" UnityEvent
+PlacementManager --> "OnToggleUndo<bool>" "UnityEvent`1"
+PlacementManager --> "previousRotation" Quaternion
+class InputManager {
+    +  <<event>> OnMousePressed,OnMouseReleased,OnCancle,OnUndo : Action 
+    +  <<event>> OnRotate : Action<int> 
+    +  <<event>> OnToggleDelete : Action<bool> 
+    + GetSelectedMapPosition() : Vector3
+    + IsInteractingWithUI() : bool
+}
+MonoBehaviour <|-- InputManager
+class SelectionData {
+    + PlacementValidity : bool <<set>> <<get>>
+    + SelectionData(placedItemData:ItemData)
+    + Clear() : void
+    + AddToGridPositions(pos:Vector3Int) : void
+    + AddToWorldPositions(pos:Vector3) : void
+    + AddToPreviewPositions(pos:Vector3) : void
+    + GetSelectedGridPositions() : List<Vector3Int>
+    + GetSelectedWorldPositions() : List<Vector3>
+    + GetPreviewGridPositions() : List<Vector3>
+    + GetSelectedPositionsObjectRotation() : List<Quaternion>
+    + GetSelectedPositionsGridRotation() : List<Quaternion>
+    + GetData() : SelectionResult
+    + SetObjectRotation(objectsRotation:List<Quaternion>) : void
+    + SetGridCheckRotation(gridCheckRotation:List<Quaternion>) : void
+}
+SelectionData --> "PlacedItemData" ItemData
+SelectionData o-> "Rotation" Quaternion
+class PlacementGridData {
+    xGridBoundMin : int
+    xGridBoundMax : int
+    zGridBoundMin : int
+    zGridBoundMax : int
+    + PlacementGridData(xMin:int, xMax:int, zMin:int, zMax:int)
+    + IsSpaceFree(currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int, edgePlacement:bool) : bool
+    + IsSpaceOccupied(currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int, edgePlacement:bool) : bool
+    + GetCellPositions(currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int) : List<Vector3Int>
+    + GetEdgePositions(currentTilePosition:Vector3Int, size:Vector2Int, rotation:int) : List<Edge>
+    + AddCellObject(index:int, ID:int, currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int) : void
+    + AddEdgeObject(index:int, ID:int, currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int) : void
+    + GetEdgesOccupiedForEdgeObject(selectedEdge:Edge) : List<Edge>
+    + GetPositionsOccupiedForCellObject(currentTilePosition:Vector3Int) : List<Vector3Int>
+    + GetStructureIDForEdgeObject(currentTilePosition:Vector3Int, rotation:int) : int
+    + GetStructureIDForCellObject(currentTilePosition:Vector3Int) : int
+}
+class IsExternalInit {
+}
+class "Dictionary`2"<T1,T2> {
+}
+PlacementGridData --> "gridCellsDictionary<Vector3Int,PlacedCellObjectData>" "Dictionary`2"
+PlacementGridData --> "gridEdgesDictionary<Edge,PlacedEdgeObjectData>" "Dictionary`2"
+class StructurePlacer {
+    + GetObjectsRotation(index:int) : Quaternion
+    + PlaceStructure(objectToPlace:GameObject, position:Vector3, rotation:Quaternion, yHeight:float) : int
+    + RemoveObjectAt(index:int) : void
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- StructurePlacer
+StructurePlacer o-> "placedObjects<GameObject>" "List`1"
+class WallPlacementStrategy {
+    + WallPlacementStrategy(wallPlacementData:PlacementGridData, inWallPlacementData:PlacementGridData, objectPlacementData:PlacementGridData, gridManager:GridManager)
+    + <<override>> StartSelection(mousePosition:Vector3, selectionData:SelectionData) : void
+    + <<override>> ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + <<override>> FinishSelection(selectionData:SelectionData) : void
+}
+SelectionStrategy <|-- WallPlacementStrategy
+class SaveLoadSystem {
+    SaveData() : void
+    Update() : void
+}
+MonoBehaviour <|-- SaveLoadSystem
+class PlacementPreview {
+    + MovePreview(positions:List<Vector3>, rotation:List<Quaternion>) : void
+    + StopShowingPreview() : void
+    + StartShowingPreview(placedObject:GameObject, keepMaterial:bool) : void
+    + ShowPlacementFeedback(val:bool) : void
+}
+MonoBehaviour <|-- PlacementPreview
+PlacementPreview --> "defautlColor" Color
+class ButtonHighlightController {
+    + ResetAll() : void
+}
+MonoBehaviour <|-- ButtonHighlightController
+ButtonHighlightController --> "buttonClickSound" AudioSource
+class StructurePlacementCommand {
+    + StructurePlacementCommand(placementManager:PlacementManager, placementData:PlacementGridData, itemData:ItemData, selectionResult:SelectionResult)
+    + CanExecute() : bool
+    + Execute() : void
+    + Undo() : void
+}
+ICommand <|-- StructurePlacementCommand
+StructurePlacementCommand --> "placementManager" PlacementManager
+StructurePlacementCommand --> "placementData" PlacementGridData
+StructurePlacementCommand --> "itemData" ItemData
+StructurePlacementCommand --> "selectionResult" SelectionResult
+class FreeObjectPlacementStrategy {
+    + FreeObjectPlacementStrategy(placementData:PlacementGridData, wallPlacementData:PlacementGridData, inWallPlacementData:PlacementGridData, gridManager:GridManager)
+    + <<override>> StartSelection(mousePosition:Vector3, selectionData:SelectionData) : void
+    + <<override>> ModifySelection(mousePosition:Vector3, selectionData:SelectionData) : bool
+    + <<override>> HandleRotation(rotation:Quaternion, selectionData:SelectionData) : Quaternion
+    + <<override>> FinishSelection(selectionData:SelectionData) : void
+}
+SelectionStrategy <|-- FreeObjectPlacementStrategy
+class PlacedEdgeObjectData {
+    + gameObjectIndex : int
+    + structureID : int
+    + PlacedEdgeObjectData(gameObjectIndex:int, structureID:int, positionsOccupied:IEnumerable<Edge>, origin:Vector3Int)
+}
+class "IEnumerable`1"<T> {
+}
+PlacedEdgeObjectData --> "PositionsOccupied<Edge>" "IEnumerable`1"
+PlacedEdgeObjectData --> "origin" Vector3Int
+class DaytimeScript {
+    Start() : void
+    + ChangeDaytime() : void
+}
+MonoBehaviour <|-- DaytimeScript
+class CommandManager {
+    + Invoke(commandToExecute:ICommand) : void
+    + Undo() : bool
+    + ClearCommandsList() : void
+    + GetCommandsCount() : int
+}
+class PlacedCellObjectData {
+    + gameObjectIndex : int
+    + structureID : int
+    + PlacedCellObjectData(gameObjectIndex:int, structureID:int, positionsOccupied:IEnumerable<Vector3Int>, origin:Vector3Int)
+}
+class "IEnumerable`1"<T> {
+}
+PlacedCellObjectData --> "PositionsOccupied<Vector3Int>" "IEnumerable`1"
+PlacedCellObjectData --> "origin" Vector3Int
+class PlacementSelector {
+    +  <<event>> OnSelectionChanged,OnSelectionFinished : Action<SelectionResult> 
+    + PlacementSelector(placementStrategy:SelectionStrategy, selectionData:SelectionData)
+    + HandleSelectionStarted(mousePosition:Vector3) : void
+    + HandleSelectionFinished() : void
+    + HandleMouseMovement(mousePosition:Vector3) : void
+    + HandleRotation(rotationAmount:Quaternion) : void
+    + ResetSelection() : void
+}
+PlacementSelector --> "selectionData" SelectionData
+PlacementSelector --> "selectionStrategy" SelectionStrategy
+PlacementSelector --> "CurrentSelectionStrategy" SelectionStrategy
+class PlacementValidator <<static>> {
+    + {static} CheckIfPositionsAreOccupied(selectedPositions:List<Vector3Int>, placementData:PlacementGridData, objectSize:Vector2Int, selectedPositionsRotation:List<Quaternion>, edgePlacement:bool) : bool
+    + {static} CheckIfPositionsAreFree(selectedPositions:List<Vector3Int>, placementData:PlacementGridData, objectSize:Vector2Int, selectedPositionsRotation:List<Quaternion>, edgePlacement:bool) : bool
+    + {static} CheckIfPositionsAreValid(selectedPositions:List<Vector3Int>, placementData:PlacementGridData, objectSize:Vector2Int, selectedPositionsRotation:List<Quaternion>, edgePlacement:bool) : bool
+}
+class UIPlacementController {
+    + SelectObjectWithIndex(index:int) : void
+    + RequestUndo() : void
+    + MoveRequest() : void
+    + ResetMovementButton() : void
+    + CancelPlacementRequested() : void
+    + EnterMovementState() : void
+}
+class "UnityEvent`1"<T> {
+}
+MonoBehaviour <|-- UIPlacementController
+UIPlacementController --> "OnObjectSelected<int>" "UnityEvent`1"
+UIPlacementController --> "OnUndoRequested" UnityEvent
+UIPlacementController --> "OnMoveRequest" UnityEvent
+UIPlacementController --> "OnResetMovementButton" UnityEvent
+UIPlacementController --> "OnCancelPlacement" UnityEvent
+UIPlacementController --> "OnMovementStateEntered" UnityEvent
+@enduml

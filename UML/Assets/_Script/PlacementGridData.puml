@@ -1,0 +1,25 @@
+@startuml
+class PlacementGridData {
+    xGridBoundMin : int
+    xGridBoundMax : int
+    zGridBoundMin : int
+    zGridBoundMax : int
+    + PlacementGridData(xMin:int, xMax:int, zMin:int, zMax:int)
+    + IsSpaceFree(currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int, edgePlacement:bool) : bool
+    + IsSpaceOccupied(currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int, edgePlacement:bool) : bool
+    + GetCellPositions(currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int) : List<Vector3Int>
+    + GetEdgePositions(currentTilePosition:Vector3Int, size:Vector2Int, rotation:int) : List<Edge>
+    + AddCellObject(index:int, ID:int, currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int) : void
+    + AddEdgeObject(index:int, ID:int, currentTilePosition:Vector3Int, objectSize:Vector2Int, rotation:int) : void
+    + GetEdgesOccupiedForEdgeObject(selectedEdge:Edge) : List<Edge>
+    + GetPositionsOccupiedForCellObject(currentTilePosition:Vector3Int) : List<Vector3Int>
+    + GetStructureIDForEdgeObject(currentTilePosition:Vector3Int, rotation:int) : int
+    + GetStructureIDForCellObject(currentTilePosition:Vector3Int) : int
+}
+class IsExternalInit {
+}
+class "Dictionary`2"<T1,T2> {
+}
+PlacementGridData --> "gridCellsDictionary<Vector3Int,PlacedCellObjectData>" "Dictionary`2"
+PlacementGridData --> "gridEdgesDictionary<Edge,PlacedEdgeObjectData>" "Dictionary`2"
+@enduml
